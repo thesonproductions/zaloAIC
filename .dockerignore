@@ -1,0 +1,8 @@
+# Never include private contest data, hidden app state, experiments, git or skills
+**
+!Dockerfile
+!requirements_cuda.txt
+!src/
+!src/**
+!model_bundle/
+!model_bundle/**

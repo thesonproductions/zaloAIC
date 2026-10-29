@@ -1,1 +1,45 @@
 *.md
+
+
+# Local agent configurations and installed skills: do not push
+/.agents/
+/.claude/
+/AGENTS.md
+/scripts/verify_skills.py
+
+# Private Zalo AI Challenge datasets (audio, labels, environments)
+/datasets/
+*.zip
+
+# Model weights and generated outputs
+*.safetensors
+*.gguf
+*.pt
+*.pth
+*.onnx
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+runs/
+outputs/
+artifacts/
+checkpoints/
+result/
+submission.jsonl
+
+# Secrets and OS files
+.env
+.env.*
+.DS_Store
+
+/docs/research/
+
+/scripts/research/
+
+/scripts/research/
+
+/model_bundle/

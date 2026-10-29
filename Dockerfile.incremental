@@ -1,0 +1,8 @@
+# Incremental local image overlay for quick validation.
+# Reuses already built pinned HF weights/dependencies in lifemate:v2-cuda-final.
+# For reproducible release, Dockerfile is self-contained and preferred.
+FROM lifemate:v2-cuda-final
+WORKDIR /app
+COPY src/ /app/src/
+RUN python -m compileall -q /app/src
+CMD ["python","/app/src/run_cuda.py","--data-root","/data","--split","auto","--llm","/models/llm","--asr","/models/asr","--out","/result/submission.jsonl"]
