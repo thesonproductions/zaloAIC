@@ -9,6 +9,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "datasets" / "train+public_test"
 
+def resolve_data_root(base: Path, split: str) -> Path:
+    for candidate in (base, base / "train+public_test", base.parent):
+        if (candidate / split / f"{split}.jsonl").is_file():
+            return candidate
+    raise FileNotFoundError(
+        f"Could not find {split}/{split}.jsonl under {base}; "
+        "pass --data-root pointing to the directory containing the split folders"
+    )
+
 def lines(path):
     with path.open(encoding="utf-8") as f:
         for i, line in enumerate(f, 1):
@@ -21,11 +30,13 @@ def lines(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--split",choices=["train","public_test"],default="public_test")
+    parser.add_argument("--data-root",type=Path,default=DATA)
     parser.add_argument("--file",required=True)
     parser.add_argument("--allow-partial",action="store_true")
     args=parser.parse_args()
 
-    source=DATA/args.split/f"{args.split}.jsonl"
+    data_root=resolve_data_root(args.data_root,args.split)
+    source=data_root/args.split/f"{args.split}.jsonl"
     submission=Path(args.file)
     if not submission.is_file():raise SystemExit(f"File not found: {submission}")
     gold_ids=[x["id"] for x in lines(source)]
@@ -36,7 +47,7 @@ def main():
         raise SystemExit(f"FAIL incomplete or wrong order: {len(got_ids)}/{len(gold_ids)}")
     if args.allow_partial and got_ids!=[x for x in gold_ids if x in set(got_ids)]:
         raise SystemExit("FAIL subset IDs not in source order")
-    sys.path.insert(0,str(DATA/args.split))
+    sys.path.insert(0,str(data_root/args.split))
     from zaic_tools import ToolEnv
     mismatch=0
     wrong_schema=0
@@ -44,7 +55,7 @@ def main():
         if not isinstance(r.get("tool_calls"),list) or not isinstance(r.get("state_hash"),str):
             raise SystemExit(f"FAIL malformed row {r.get('id')}")
         # This verification pass replays, it does not use environment backing files.
-        env=ToolEnv(args.split,r["id"],root=DATA)
+        env=ToolEnv(args.split,r["id"],root=data_root)
         for call in r["tool_calls"]:
             res=env.validate(call["name"],call["arguments"])
             if not res.get("ok"):wrong_schema+=1
