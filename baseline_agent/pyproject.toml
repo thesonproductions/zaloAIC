@@ -1,0 +1,21 @@
+[project]
+name = "ai-chatbot-adk-backend"
+version = "0.1.0"
+description = "FastAPI backend using Google ADK, Postgres, and ChromaDB with SmolLM2"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.22.0",
+    "python-multipart>=0.0.6",
+    "google-adk",
+    "litellm==1.105.1",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "asyncpg>=0.28.0",
+    "pgvector>=0.2.5",
+    "sentence-transformers>=2.2.2",
+    "pypdf>=3.10.0",
+    "pandas>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "psycopg2-binary>=2.9.0"
+]

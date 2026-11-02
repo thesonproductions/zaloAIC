@@ -1,0 +1,56 @@
+curl -X POST http://localhost:8000/apps/my_sample_agent/users/u_123/sessions/s_123 \
+  -H "Content-Type: application/json" \
+  -d '{"key1": "value1", "key2": 42}'
+
+------------------------------------------------------
+
+curl -X POST \
+  http://localhost:8000/run \
+  -H "Content-Type: application/json" \
+  -d '{
+    "appName": "adk",
+    "userId": "user123",
+    "sessionId": "session001",
+    "newMessage": {
+      "role": "user",
+      "parts": [
+        {"text": "Hello, introduce yourself"}
+      ]
+    }
+  }'
+
+------------------------------------------------------
+
+curl -N -X POST \
+  http://localhost:8000/run_sse \
+  -H "Content-Type: application/json" \
+  -d '{
+    "appName": "adk",
+    "userId": "user123",
+    "sessionId": "session001",
+    "newMessage": {
+      "role": "user",
+      "parts": [
+        {"text": "viết giúp tôi email đến abc@gmail.com với subtitle xin chào và cc đến theson@gmail.com với nội dung xin chào"}
+      ]
+    },
+    "streaming": true
+  }'
+
+
+curl -N -X POST   http://localhost:8000/run_sse   -H "Content-Type: application/json"   -d '{
+    "appName": "adk",
+    "userId": "user",
+    "sessionId": "c1b3b6c5-e3eb-4652-8398-05f580e5dadb",
+    "newMessage": {
+      "role": "user",
+      "parts": [
+        {"text": "Trả lời giúp tôi email lebong@gmail.com với nội dung hello"}
+      ]
+    },
+    "streaming": true
+  }'
+
+curl -s \
+  "http://localhost:8000/apps/adk/users/user/sessions/c1b3b6c5-e3eb-4652-8398-05f580e5dadb" \
+  | jq '.state'
